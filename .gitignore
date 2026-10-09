@@ -67,3 +67,6 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Sample containers the asset inspector writes
+asset-samples/
