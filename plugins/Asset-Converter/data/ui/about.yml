@@ -1,0 +1,35 @@
+# The About dialog. scripts/about.iks opens it, sets {version}, and waits for a button: each button
+# resumes the script with its choice.
+surface:
+  id: converter/about
+  anchors: center
+  width: fit
+  height: fit
+  layer: overlay
+
+content:
+  type: column
+  id: content
+  gap: 12
+  align: center
+  padding: 24
+  children:
+    - { type: label, id: title, text: "@ABOUT_TITLE" }
+    - { type: label, id: version, text: "@ABOUT_VERSION", classes: [muted] }
+    - type: row
+      id: buttons
+      gap: 12
+      children:
+        - type: button
+          id: inspector
+          text: "@MENU_MAIN_ASSET_INSPECTOR"
+          width: 160
+          height: 36
+          onClick: "resume(about/choice, 1)"
+        - type: button
+          id: close
+          text: "@ABOUT_CLOSE"
+          width: 160
+          height: 36
+          autofocus: true
+          onClick: "resume(about/choice, 0)"

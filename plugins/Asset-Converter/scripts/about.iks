@@ -1,0 +1,14 @@
+// The About dialog, run by the main menu's About button. Edits to this file are picked up the next
+// time the button is pressed.
+converter.showMenu(false);
+Object about = ui.open("ui/about.yml");
+about.set("version", converter.version());
+
+// 1 opens the asset inspector, 0 closes the dialog
+int choice = await("about/choice");
+about.close();
+if (choice == 1) {
+    converter.showInspector();
+} else {
+    converter.showMenu(true);
+}

@@ -2,7 +2,8 @@
 # second, so it can be edited live.
 #
 # Handlers (start-sphere-demo, open-model-loader, open-inspector), the samples.count value and the
-# @ text come from MainMenu.java and the plugin's strings.properties.
+# @ text come from MainMenu.java and the plugin's strings.properties. The About button runs
+# scripts/about.iks instead of a Java handler.
 surface:
   id: converter/main-menu
   anchors: fill
@@ -37,6 +38,8 @@ content:
           with: { id: model-loader, text: "@MENU_MAIN_MODEL_LOADER", action: open-model-loader, focus: false }
         - use: menu-button
           with: { id: asset-inspector, text: "@MENU_MAIN_ASSET_INSPECTOR", action: open-inspector, focus: false }
+        - use: menu-button
+          with: { id: about, text: "@MENU_MAIN_ABOUT", action: "script(about.iks)", focus: false }
         - type: label
           id: samples
           text: "@MENU_MAIN_SAMPLE_COUNT"
