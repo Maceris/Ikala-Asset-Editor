@@ -1,0 +1,43 @@
+# The editor's main menu. While the editor runs, saving this file rebuilds the menu within a
+# second, so it can be edited live.
+#
+# Handlers (start-sphere-demo, open-model-loader, open-inspector), the samples.count value and the
+# @ text come from MainMenu.java and the plugin's strings.properties.
+surface:
+  id: converter/main-menu
+  anchors: fill
+  layer: background
+
+templates:
+  menu-button:
+    params: [id, text, action, focus]
+    node:
+      type: button
+      id: "${id}"
+      text: "${text}"
+      width: 240
+      height: 40
+      autofocus: "${focus}"
+      onClick: "${action}"
+
+content:
+  type: column
+  id: content
+  justify: center
+  align: center
+  children:
+    - type: column
+      id: buttons
+      gap: 12
+      align: center
+      children:
+        - use: menu-button
+          with: { id: sphere-demo, text: "@MENU_MAIN_SPHERE_DEMO", action: start-sphere-demo, focus: true }
+        - use: menu-button
+          with: { id: model-loader, text: "@MENU_MAIN_MODEL_LOADER", action: open-model-loader, focus: false }
+        - use: menu-button
+          with: { id: asset-inspector, text: "@MENU_MAIN_ASSET_INSPECTOR", action: open-inspector, focus: false }
+        - type: label
+          id: samples
+          text: "@MENU_MAIN_SAMPLE_COUNT"
+          classes: [muted]
