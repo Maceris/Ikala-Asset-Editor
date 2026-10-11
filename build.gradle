@@ -1,6 +1,8 @@
 tasks.register('copyPlugins', Copy) {
 	from subprojects.collect { it.tasks.withType(Jar) }
 	exclude '**/Ikala-Core-*.jar'
+	// The factory client only needs the server for single player, which the editor doesn't run
+	exclude '**/Factory-Server-*.jar'
 	exclude '**/*-javadoc.jar'
 	exclude '**/*-sources.jar'
     into 'plugins'
