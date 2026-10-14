@@ -1,7 +1,7 @@
 # The editor's main menu. While the editor runs, saving this file rebuilds the menu within a
 # second, so it can be edited live.
 #
-# Handlers (start-sphere-demo, open-model-loader, open-inspector, open-tool), the samples.count
+# Handlers (start-sphere-demo, open-workbench, open-inspector, open-tool), the samples.count
 # value, the tools list and the @ text come from MainMenu.java and the plugin's strings.properties.
 # The About button runs scripts/about.iks instead of a Java handler. The tools are offered by other
 # plugins, like the factory plugin's Worldgen Lab, and come and go as they load and unload.
@@ -45,7 +45,7 @@ content:
         - use: menu-button
           with: { id: sphere-demo, text: "@MENU_MAIN_SPHERE_DEMO", action: start-sphere-demo, focus: true }
         - use: menu-button
-          with: { id: model-loader, text: "@MENU_MAIN_MODEL_LOADER", action: open-model-loader, focus: false }
+          with: { id: workbench, text: "@MENU_MAIN_WORKBENCH", action: open-workbench, focus: false }
         - use: menu-button
           with: { id: asset-inspector, text: "@MENU_MAIN_ASSET_INSPECTOR", action: open-inspector, focus: false }
         - use: menu-button
