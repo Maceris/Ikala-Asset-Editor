@@ -1,0 +1,59 @@
+// A check of the workbench's picking and level of detail, driven through its own controls. Run it
+// at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a model file, or preview:sphere>
+// It opens the model, picks whatever is in the middle of the view, builds the whole scene's level
+// of detail, hides and shows the original, and leaves it colored by cluster. Each step is logged
+// as "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(args);
+
+// Reading a big scene can take a while; its Scene section shows once it is open
+boolean open = await(t.itemExists("*", "Frame scene"));
+while (!open) {
+    await(t.frames(30));
+    open = await(t.itemExists("*", "Frame scene"));
+}
+converter.log("Opened the model");
+
+// Fold the sections above, so what follows is on screen: items scrolled out of the properties
+// panel aren't there to find
+await(t.clickItem("*", "Scene"));
+await(t.clickItem("*", "Lighting"));
+
+// A click in the middle of the view picks the mesh there
+await(t.mouseClick(920, 553));
+await(t.frames(5));
+boolean picked = await(t.itemExists("*", "Frame selected"));
+if (picked) {
+    converter.log("Picked a mesh");
+} else {
+    converter.log("Picked nothing");
+}
+await(t.clickItem("*", "Selected"));
+await(t.clickItem("*", "Material"));
+
+// Loading the textures can take a minute; the build button shows once they are in
+boolean ready = await(t.itemExists("*", "Build level of detail"));
+while (!ready) {
+    await(t.frames(30));
+    ready = await(t.itemExists("*", "Build level of detail"));
+}
+converter.log("The textures are in");
+
+await(t.clickItem("*", "Build level of detail"));
+boolean built = await(t.itemExists("*", "Colors"));
+while (!built) {
+    await(t.frames(30));
+    built = await(t.itemExists("*", "Colors"));
+}
+converter.log("Built the level of detail");
+
+await(t.clickItem("*", "Show the original"));
+await(t.assertItemChecked("*", "Show the original", true));
+await(t.clickItem("*", "Show the original"));
+await(t.assertItemChecked("*", "Show the original", false));
+converter.log("Hid and showed the original");
+
+await(t.clickItem("*", "Colors"));
+await(t.clickItem("*", "Clusters"));
+converter.log("Colored by cluster");
