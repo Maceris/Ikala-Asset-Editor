@@ -9,6 +9,8 @@ include ':Ikala-Graphics'
 project(':Ikala-Graphics').projectDir = new File(pluginFolder + '/Ikala-Graphics')
 include ':Random'
 project(':Random').projectDir = new File(pluginFolder + '/Random')
+include ':Ikala-Characters'
+project(':Ikala-Characters').projectDir = new File(pluginFolder + '/Ikala-Characters')
 include ':Factory-Core'
 project(':Factory-Core').projectDir = new File(pluginFolder + '/Factory-Core')
 include ':Factory-Client'
