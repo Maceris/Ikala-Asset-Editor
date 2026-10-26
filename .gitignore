@@ -70,3 +70,7 @@ Temporary Items
 
 # Sample containers the asset inspector writes
 asset-samples/
+# Content for testing that we don't want to commit
+test_content/
+# Cached data
+cache/

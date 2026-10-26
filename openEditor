@@ -6,4 +6,4 @@
 # exec java -XstartOnFirstThread -jar Ikala-Core-0.6.0.jar
 
 # Windows command
-exec java -jar Ikala-Core-0.6.0.jar
+exec java $@ -jar Ikala-Core-0.6.0.jar
