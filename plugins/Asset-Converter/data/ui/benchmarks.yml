@@ -1,0 +1,47 @@
+# The benchmark screen the main menu's Benchmarks button opens: the gate benchmark's ready-made
+# runs, each a button with a line saying what it shows. The presets list, the run-benchmark and back
+# handlers and the @ text come from BenchmarkMenu.java and the plugin's strings.properties.
+surface:
+  id: converter/benchmarks
+  anchors: fill
+  layer: background
+
+templates:
+  preset-row:
+    node:
+      type: row
+      id: "preset"
+      gap: 12
+      align: center
+      children:
+        - type: button
+          id: run
+          text: "{preset.name}"
+          width: 200
+          height: 36
+          onClick: run-benchmark
+        - type: label
+          id: description
+          text: "{preset.description}"
+          classes: [muted]
+
+content:
+  type: column
+  id: content
+  justify: center
+  align: center
+  gap: 16
+  children:
+    - { type: label, id: title, text: "@BENCHMARKS_TITLE" }
+    - { type: label, id: hint, text: "@BENCHMARKS_HINT", classes: [muted] }
+    - type: column
+      id: presets
+      gap: 8
+      repeat: { list: presets, as: preset, template: preset-row, key: "{preset.id}" }
+    - type: button
+      id: back
+      text: "@BENCHMARKS_BACK"
+      width: 200
+      height: 36
+      autofocus: true
+      onClick: back

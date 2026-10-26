@@ -1,0 +1,24 @@
+# The bar shown while a benchmark the menu opened runs: its name, and the way back to the list,
+# which removes its world. The running.name value, the leave-benchmark handler and the @ text come
+# from BenchmarkMenu.java and the plugin's strings.properties.
+surface:
+  id: converter/benchmark-running
+  anchors: bottom-left
+  width: fit
+  height: fit
+  layer: overlay
+
+content:
+  type: row
+  id: content
+  gap: 12
+  align: center
+  padding: 8
+  children:
+    - { type: label, id: name, text: "{running.name}" }
+    - type: button
+      id: leave
+      text: "@BENCHMARK_LEAVE"
+      width: 200
+      height: 32
+      onClick: leave-benchmark
