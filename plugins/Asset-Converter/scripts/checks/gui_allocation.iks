@@ -1,0 +1,84 @@
+// How much the render thread allocates per frame while the IkGui demo window is idle and in use.
+// Run it at startup with
+//   -Dikala.test.script=<this file>
+// Each phase logs "Allocation <phase>: <n> KiB per frame over <m> frames"; the last line is
+// "Script: done".
+Object t = ui.test();
+await(t.frames(300));
+converter.logAllocation("start");
+await(t.frames(600));
+converter.logAllocation("menu idle");
+
+await(t.clickItem("*", "Windows"));
+await(t.clickItem("*", "IkGui Demo Window"));
+await(t.frames(120));
+converter.logAllocation("opening the demo");
+await(t.frames(600));
+converter.logAllocation("demo idle");
+
+// The mouse sweeps over the demo, hovering whatever is under it, a step every couple of frames
+await(t.clickItem("*", "Widgets"));
+await(t.clickItem("*", "Basic"));
+await(t.frames(60));
+converter.logAllocation("opening widgets");
+int pass = 0;
+while (pass < 3) {
+    int y = 80;
+    while (y < 900) {
+        int x = 60;
+        while (x < 900) {
+            await(t.mouseMove(x, y));
+            x = x + 70;
+        }
+        y = y + 40;
+    }
+    pass = pass + 1;
+}
+converter.logAllocation("hovering widgets");
+
+// Sliders and checkboxes: a few clicks and drags
+await(t.clickItem("*", "checkbox"));
+await(t.clickItem("*", "checkbox"));
+await(t.typeItem("*", "input int", "42"));
+await(t.typeItem("*", "input text", "hello allocation"));
+await(t.frames(300));
+converter.logAllocation("editing widgets");
+
+// Tables, with the widgets folded away
+await(t.clickItem("*", "Widgets"));
+await(t.clickItem("*", "Tables & Columns"));
+await(t.frames(60));
+converter.logAllocation("opening tables");
+pass = 0;
+while (pass < 3) {
+    int y = 80;
+    while (y < 900) {
+        int x = 60;
+        while (x < 900) {
+            await(t.mouseMove(x, y));
+            x = x + 70;
+        }
+        y = y + 40;
+    }
+    pass = pass + 1;
+}
+converter.logAllocation("hovering tables");
+
+// Scrolling the demo through its layout section
+await(t.clickItem("*", "Tables & Columns"));
+await(t.clickItem("*", "Layout & Scrolling"));
+await(t.mouseMove(400, 400));
+int wheel = 0;
+while (wheel < 120) {
+    if (wheel < 60) {
+        await(t.mouseWheel(400, 400, -1));
+    } else {
+        await(t.mouseWheel(400, 400, 1));
+    }
+    await(t.frames(2));
+    wheel = wheel + 1;
+}
+converter.logAllocation("scrolling layout");
+await(t.frames(600));
+converter.logAllocation("demo idle again");
+converter.log("done");
