@@ -1,0 +1,134 @@
+// Drives the character editor through its designs and every tab, logging what each design wears
+// and where its bones are posed, and saving frames, so a refactor of the editor can be checked by
+// diffing two runs' logs (with times stripped) and comparing their frames.
+// Run it at startup with
+//   -Dikala.test.script=<this file>
+// It needs the test content folders in the Ikala-Characters config. Frames go to
+// build/checks/character_editor/; the last line logged is "Script: done".
+Object t = ui.test();
+await(t.frames(120));
+converter.openTool("characters/editor");
+await(characters.settle());
+characters.markers(false);
+// Still, so poses don't depend on when they're read
+characters.still(true);
+
+// Each design: what it wears, where its bones are, and a frame of the whole character
+characters.showDesign("test:design/mannequin_male");
+await(characters.settle());
+await(t.frames(30));
+converter.log("check mannequin_male worn: " + characters.worn());
+converter.log("check mannequin_male posed: " + characters.posed(""));
+characters.frame(null, 0.2, 0.6);
+await(t.frames(30));
+await(t.saveFrame("build/checks/character_editor/mannequin_male.png"));
+
+characters.showDesign("test:design/mannequin_female");
+await(characters.settle());
+await(t.frames(30));
+converter.log("check mannequin_female worn: " + characters.worn());
+converter.log("check mannequin_female posed: " + characters.posed(""));
+characters.frame(null, 0.2, 0.6);
+await(t.frames(30));
+await(t.saveFrame("build/checks/character_editor/mannequin_female.png"));
+
+characters.showDesign("test:design/fighter");
+await(characters.settle());
+await(t.frames(30));
+converter.log("check fighter worn: " + characters.worn());
+converter.log("check fighter posed: " + characters.posed(""));
+characters.frame(null, 0.2, 0.6);
+await(t.frames(30));
+await(t.saveFrame("build/checks/character_editor/fighter.png"));
+
+characters.showDesign("test:design/caster");
+await(characters.settle());
+await(t.frames(30));
+converter.log("check caster worn: " + characters.worn());
+converter.log("check caster posed: " + characters.posed(""));
+characters.frame(null, 0.2, 0.6);
+await(t.frames(30));
+await(t.saveFrame("build/checks/character_editor/caster.png"));
+
+characters.showDesign("test:design/caped");
+await(characters.settle());
+// The cape's springs swing a while after it goes on
+await(t.frames(240));
+converter.log("check caped worn: " + characters.worn());
+converter.log("check caped cape: " + characters.posed("cape."));
+characters.frame(null, 0.2, 2.6);
+await(t.frames(30));
+await(t.saveFrame("build/checks/character_editor/caped_back.png"));
+
+// Wings in each state
+characters.showDesign("test:design/winged");
+await(characters.settle());
+await(t.frames(30));
+converter.log("check winged worn: " + characters.worn());
+// Wings ease between states, so give them time to arrive
+characters.wings("fold");
+await(t.frames(240));
+converter.log("check wings fold: " + characters.posed("wing"));
+characters.wings("spread");
+await(t.frames(240));
+converter.log("check wings spread: " + characters.posed("wing"));
+characters.frame(null, 0.2, 2.6);
+await(t.frames(30));
+await(t.saveFrame("build/checks/character_editor/winged_spread.png"));
+characters.wings("auto");
+
+// Bare, then dressed again, with a decal
+characters.showDesign("test:design/fighter");
+await(characters.settle());
+characters.bare();
+await(t.frames(30));
+converter.log("check fighter bare worn: " + characters.worn());
+characters.showDesign("test:design/fighter");
+await(characters.settle());
+characters.decal("ikala:decal/star", "chest", "", "");
+await(t.frames(30));
+characters.frame(null, 0.1, 0.0);
+await(t.frames(30));
+await(t.saveFrame("build/checks/character_editor/fighter_decal.png"));
+characters.decal("", "", "", "");
+
+// Bones shown
+characters.bones(true, false);
+await(t.frames(30));
+await(t.saveFrame("build/checks/character_editor/fighter_bones.png"));
+characters.bones(false, false);
+
+// Every tab, so each panel's drawing runs
+await(t.clickItem("*", "Body"));
+await(t.frames(10));
+await(t.clickItem("*", "Costume"));
+await(t.frames(10));
+await(t.clickItem("*", "Content"));
+await(t.frames(10));
+await(t.clickItem("*", "Body"));
+await(t.frames(10));
+await(t.clickItem("*", "Scales"));
+await(t.frames(10));
+await(t.clickItem("*", "Colors"));
+await(t.frames(10));
+await(t.clickItem("*", "Effects"));
+await(t.frames(10));
+await(t.clickItem("*", "Equipment"));
+await(t.frames(10));
+await(t.clickItem("*", "Motion"));
+await(t.frames(10));
+await(t.clickItem("*", "Align"));
+await(t.frames(10));
+await(t.clickItem("*", "Scales"));
+await(t.frames(10));
+await(t.saveFrame("build/checks/character_editor/tabs.png"));
+
+// Moving, then still again
+characters.still(false);
+characters.move(1.5);
+await(t.frames(120));
+characters.move(0);
+characters.still(true);
+await(t.frames(30));
+converter.log("check after moving worn: " + characters.worn());
+converter.log("done");
