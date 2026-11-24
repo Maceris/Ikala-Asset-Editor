@@ -3,7 +3,7 @@
 # tool instead. The asset editor turns this on.
 editor-mode: true
 lab:
-  # Data folders in load order. Empty uses Factory-Core's data folder.
-  data-folders: ['../Lotomation/plugins/Factory-Core/data']
+  # Content folders in load order. Empty uses the installed plugins' content folders.
+  data-folders: ['../Lotomation/plugins/Lotomation/data']
   world-type: 'lotomation:overworld'
   seed: 0
