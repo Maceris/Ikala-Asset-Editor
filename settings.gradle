@@ -20,3 +20,5 @@ project(':Factory-Client').projectDir = new File(pluginFolder + '/Factory-Client
 // Only so Factory-Client compiles; the editor doesn't load the server, see copyPlugins
 include ':Factory-Server'
 project(':Factory-Server').projectDir = new File(pluginFolder + '/Factory-Server')
+include ':Ikala-Permissions'
+project(':Ikala-Permissions').projectDir = new File(pluginFolder + '/Ikala-Permissions')

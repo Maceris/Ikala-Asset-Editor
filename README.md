@@ -31,3 +31,14 @@ The editor is never written to while it runs. Its settings, logs and reports go 
 | macOS | `~/Library/Application Support/Ikala Asset Editor` | `~/Library/Caches/Ikala Asset Editor` |
 
 `-Dikala.home=<dir>` and `-Dikala.cache=<dir>` move them.
+
+## Converting Assets
+
+`bin/convertAsset` converts assets between the binary `.ika` form games load and text, without opening the editor. Materials only for now: `stone.ika` becomes `stone.material.yml` beside it, and back. Give several files to convert each, or `-o <file>` to name the output of one:
+
+```
+bin/convertAsset stone.material.yml
+bin/convertAsset stone.ika -o text/stone.material.yml
+```
+
+The text form is described in Ikala-Graphics' `MaterialText`.

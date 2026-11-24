@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Convert assets between the binary .ika form the game loads and text people and tools can edit,
+# without opening the editor: stone.ika <-> stone.material.yml. Run with no arguments for usage.
+# Paths are taken from where this is started, so remember them before moving to the install folder.
+
+HERE=$(pwd)
+cd "$(dirname "$0")/.." || exit 1
+ROOT=$(pwd)
+
+newest() {
+	ls $1 2>/dev/null | sort -V | tail -n 1
+}
+
+CORE=$(newest "Ikala-Core-*.jar")
+GRAPHICS=$(newest "plugins/Ikala-Graphics-*.jar")
+CONVERTER=$(newest "plugins/Asset-Converter-*.jar")
+if [ -z "$CORE" ] || [ -z "$GRAPHICS" ] || [ -z "$CONVERTER" ]; then
+	echo "The editor isn't built here; run ./gradlew build first" >&2
+	exit 1
+fi
+
+# Java's class path separator is ; on Windows and : elsewhere
+case "$(uname -s)" in
+	CYGWIN* | MINGW* | MSYS*)
+		SEP=";"
+		# Windows Java reads C:/ paths, not the shell's /c/ ones
+		ROOT=$(cygpath -m "$ROOT")
+		;;
+	*) SEP=":" ;;
+esac
+
+cd "$HERE" || exit 1
+exec java -cp "$ROOT/$CORE$SEP$ROOT/$GRAPHICS$SEP$ROOT/$CONVERTER$SEP$ROOT/libs/*" \
+	com.ikalagaming.converter.AssetConvert "$@"
