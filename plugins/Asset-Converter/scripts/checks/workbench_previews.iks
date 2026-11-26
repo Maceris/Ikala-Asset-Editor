@@ -1,0 +1,17 @@
+// A check of preview views: the workbench's Previews panel draws a sphere and a cube, each into its
+// own texture, on frames that draw no world. Run it at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a folder for the PNG files>
+// It opens the workbench without a scene, waits for the previews to settle, saves them, turns the
+// cameras with the panel's button and saves them again. Each step is logged as "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(".");
+await(t.frames(60));
+converter.savePreviews(args, "before");
+await(t.frames(60));
+converter.log("Saved the first previews");
+
+await(t.clickItem("*", "Turn"));
+await(t.frames(5));
+converter.savePreviews(args, "turned");
+await(t.frames(60));
+converter.log("Saved the turned previews");
