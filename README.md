@@ -43,6 +43,15 @@ bin/convertAsset stone.ika -o text/stone.material.yml
 
 The text form is described in Ikala-Graphics' `MaterialText`.
 
+## Building Textures
+
+`bin/buildTextures` builds a game's textures from their sources: every texture graph under the sources folder bakes its PNG maps, then every texture's PNG maps there, baked or painted, become one `.ika` under the shipped folder. Files whose pixels wouldn't change are left alone. `--uses` bakes only the graphs that read a shared parameter file:
+
+```
+bin/buildTextures ../Lotomation/art/textures ../Lotomation/plugins/Lotomation/data/textures
+bin/buildTextures ../Lotomation/art/textures ../Lotomation/plugins/Lotomation/data/textures --uses ../Lotomation/art/textures/block/wear.texparams.yml
+```
+
 ## Baking Textures
 
 `bin/bakeTextures` bakes texture graphs (`*.texgraph.yml`, made in the workbench's Graph panel) to the PNG maps the game reads, without opening the editor. Give it graphs or folders; each graph bakes to the content folder it names, or to the one `--data` gives. Maps whose pixels wouldn't change are left alone:

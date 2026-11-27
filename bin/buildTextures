@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# Build a game's textures from their sources, without opening the editor: every texture graph
+# (*.texgraph.yml) under <sources> bakes its PNG maps, then every texture's PNG maps there, baked
+# or painted, become one .ika under <shipped>. --uses <shared parameter file> bakes only the graphs
+# that read it. Files whose pixels wouldn't change are left alone. Paths are taken from where this
+# is started; for Lotomation, from beside it:
+#   bin/buildTextures ../Lotomation/art/textures ../Lotomation/plugins/Lotomation/data/textures
+
+HERE=$(pwd)
+cd "$(dirname "$0")/.." || exit 1
+ROOT=$(pwd)
+
+newest() {
+	ls $1 2>/dev/null | sort -V | tail -n 1
+}
+
+CORE=$(newest "Ikala-Core-*.jar")
+GRAPHICS=$(newest "plugins/Ikala-Graphics-*.jar")
+CONVERTER=$(newest "plugins/Asset-Converter-*.jar")
+if [ -z "$CORE" ] || [ -z "$GRAPHICS" ] || [ -z "$CONVERTER" ]; then
+	echo "The editor isn't built here; run ./gradlew build first" >&2
+	exit 1
+fi
+
+# Java's class path separator is ; on Windows and : elsewhere
+case "$(uname -s)" in
+	CYGWIN* | MINGW* | MSYS*)
+		SEP=";"
+		# Windows Java reads C:/ paths, not the shell's /c/ ones
+		ROOT=$(cygpath -m "$ROOT")
+		;;
+	*) SEP=":" ;;
+esac
+
+cd "$HERE" || exit 1
+exec java -Djava.awt.headless=true -cp "$ROOT/$CORE$SEP$ROOT/$GRAPHICS$SEP$ROOT/$CONVERTER$SEP$ROOT/libs/*" \
+	com.ikalagaming.converter.texture.BuildTextures "$@"

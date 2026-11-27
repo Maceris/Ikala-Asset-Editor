@@ -38,7 +38,7 @@ nodes:
     version: 1
     at: [1200, 0]
     set:
-      strength: '3'
+      strength: '1.5'
   constant1:
     type: input/constant
     version: 1

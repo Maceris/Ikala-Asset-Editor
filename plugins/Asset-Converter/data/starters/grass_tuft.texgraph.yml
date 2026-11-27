@@ -50,6 +50,10 @@ nodes:
     at: [480, 240]
     set:
       stops: '0:#000000 1.2:#577a3d'
+  luminance1:
+    type: channels/luminance
+    version: 1
+    at: [960, 480]
   split1:
     type: channels/split
     version: 1
@@ -68,7 +72,9 @@ links:
   - constant1.value > all1.roughness
   - expression1.result > combine1.a
   - expression2.result > gradient_map1.value
+  - gradient_map1.color > luminance1.color
   - gradient_map1.color > split1.color
+  - luminance1.value > all1.height
   - split1.b > combine1.b
   - split1.g > combine1.g
   - split1.r > combine1.r
