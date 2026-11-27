@@ -1,34 +1,37 @@
-// A check of the workbench's graph panel, on the demo math and color nodes. Run it at startup with
+// A check of the workbench's graph panel, on texture graph nodes. Run it at startup with
 //   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a folder for the saved graph>
-// It builds a small graph through the editor's own edits, links a scalar into a color (which adds
-// a Gray conversion node), undoes and redoes, duplicates and deletes, saves the graph and opens it
-// again. Then it tidies the graph: a reroute, a named reroute pair, a comment frame, a collapsed
+// It builds a small texture graph through the editor's own edits, links a texture into a color
+// (which adds a Sample node), undoes and redoes, duplicates and deletes, saves the graph and opens
+// it again. Then it tidies the graph: a reroute, a named reroute pair, a comment frame, a collapsed
 // node, hidden pins, a comment, aligning and straightening, upstream and downstream selection,
-// removing unused nodes and finding, saves that and opens it again. Last it drives the canvas with
+// removing unused nodes and finding, saves that and opens it again. Then it drives the canvas with
 // real mouse and key input at the points the editor names: the node and frame menus, the comment,
 // frame and find popups, an error's tooltip, placing a node with a held key, a reroute by
-// double-click, dragging a frame and the minimap. Each step is logged as "Script: ...".
+// double-click, dragging a frame and the minimap. Last it bakes the graph into the folder. Each
+// step is logged as "Script: ...".
 Object t = ui.test();
 converter.openWorkbench(".");
 await(t.frames(30));
 converter.graph("new");
-converter.graph("add math/checker 0 0");
-converter.graph("add math/constant 0 120");
+converter.graph("add noise/cells 0 0");
+converter.graph("add input/constant 0 120");
+converter.graph("set constant1 value 1");
 converter.graph("add math/multiply 240 40");
-converter.graph("add math/color 240 200");
-converter.graph("add math/color 240 320");
-converter.graph("add math/lerp 480 200");
-converter.graph("add out/output 720 200");
-converter.graph("set color1 g 0.4");
-converter.graph("set color2 r 0.2");
-converter.graph("link checker1.mask multiply1.a");
+converter.graph("add input/color 240 200");
+converter.graph("add input/color 240 320");
+converter.graph("add ops/blend 480 200");
+converter.graph("add output/all 720 200");
+converter.graph("set color1 color #668033");
+converter.graph("set color2 color #6b4a2e");
+converter.graph("link cells1.value multiply1.a");
 converter.graph("link constant1.value multiply1.b");
-converter.graph("link color1.color lerp1.a");
-converter.graph("link color2.color lerp1.b");
-converter.graph("link multiply1.result lerp1.t");
-converter.graph("link lerp1.color output1.color");
+converter.graph("link color1.color blend1.base");
+converter.graph("link color2.color blend1.top");
+converter.graph("link multiply1.result blend1.mask");
+converter.graph("link blend1.color all1.color");
 converter.graph("log");
-converter.graph("link multiply1.result output1.color");
+converter.graph("add input/image 480 440");
+converter.graph("link image1.texture all1.emissive");
 converter.graph("log");
 converter.graph("undo");
 converter.graph("log");
@@ -39,37 +42,37 @@ converter.graph("duplicate");
 converter.graph("log");
 converter.graph("delete");
 converter.graph("log");
-converter.graphSave(args, "demo.graph.yml");
+converter.graphSave(args, "demo.texgraph.yml");
 await(t.frames(10));
-converter.graphOpen(args, "demo.graph.yml");
+converter.graphOpen(args, "demo.texgraph.yml");
 await(t.frames(30));
 converter.graph("log");
 converter.graph("select multiply1");
 await(t.frames(30));
-converter.graph("reroute lerp1.color output1.color 680 260");
+converter.graph("reroute blend1.color all1.color 680 260");
 converter.graph("add graph/send 480 40");
 converter.graph("add graph/receive 320 360");
 converter.graph("link multiply1.result send1.in");
 converter.graph("set send1 name mask");
 converter.graph("set receive1 name mask");
-converter.graph("link receive1.out lerp1.t");
-converter.graph("add math/constant 900 600");
+converter.graph("link receive1.out blend1.mask");
+converter.graph("add input/constant 900 600");
 converter.graph("log");
 await(t.frames(5));
 converter.graph("select color1 color2");
 converter.graph("frame Colors");
 converter.graph("collapse color2");
-converter.graph("hide lerp1");
-converter.graph("comment output1 The final color");
-converter.graph("straighten output1");
-converter.graph("upstream lerp1");
-converter.graph("downstream checker1");
+converter.graph("hide blend1");
+converter.graph("comment all1 The final color");
+converter.graph("straighten all1");
+converter.graph("upstream blend1");
+converter.graph("downstream cells1");
 converter.graph("find final");
 converter.graph("unused");
 converter.graph("log");
-converter.graphSave(args, "tidy.graph.yml");
+converter.graphSave(args, "tidy.texgraph.yml");
 await(t.frames(10));
-converter.graphOpen(args, "tidy.graph.yml");
+converter.graphOpen(args, "tidy.texgraph.yml");
 await(t.frames(30));
 converter.graph("log");
 converter.graph("select");
@@ -78,11 +81,11 @@ await(t.mouseClickAt("*//graph-canvas", "node color1", "right"));
 await(t.clickItem("*", "Collapse"));
 await(t.frames(5));
 converter.graph("describe color1");
-await(t.mouseClickAt("*//graph-canvas", "node lerp1", "right"));
+await(t.mouseClickAt("*//graph-canvas", "node blend1", "right"));
 await(t.clickItem("*", "Comment..."));
 await(t.typeItem("*", "##comment", "Mixes the colors", true));
 await(t.frames(5));
-converter.graph("describe lerp1");
+converter.graph("describe blend1");
 await(t.mouseClickAt("*//graph-canvas", "frame frame1", "right"));
 await(t.clickItem("*", "Edit..."));
 await(t.typeItem("*", "##frame", "Base colors", true));
@@ -97,18 +100,26 @@ await(t.mouseClickAt("*//graph-canvas", "at 300 560"));
 await(t.keyUp("a"));
 await(t.frames(5));
 converter.graph("describe add1");
-await(t.mouseMoveTo("*//graph-canvas", "node add1"));
-await(t.waitForTooltip("Input a isn't linked"));
+converter.graph("add input/image 300 700");
+await(t.frames(5));
+await(t.mouseMoveTo("*//graph-canvas", "node image1"));
+await(t.waitForTooltip("Choose an image file"));
 converter.log("Graph tooltip shown");
-await(t.mouseDoubleClickAt("*//graph-canvas", "link color1.color lerp1.a"));
+await(t.mouseDoubleClickAt("*//graph-canvas", "link color1.color blend1.base"));
 await(t.frames(5));
 converter.graph("log");
 await(t.mouseMoveTo("*//graph-canvas", "at 300 400"));
 await(t.key("ctrl+f"));
 await(t.typeItem("*", "##find", "Output", true));
 await(t.frames(5));
-converter.graph("describe output1");
+converter.graph("describe all1");
 await(t.mouseClickAt("*//graph-canvas", "minimap 0.1 0.1"));
 await(t.frames(5));
 converter.graph("log");
+converter.graph("setting data .");
+converter.graph("setting texture block/check");
+converter.graphSave(args, "tidy.texgraph.yml");
+await(t.frames(5));
+converter.graph("bake");
+await(t.frames(30));
 converter.log("Graph checked");

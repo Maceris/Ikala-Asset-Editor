@@ -42,3 +42,12 @@ bin/convertAsset stone.ika -o text/stone.material.yml
 ```
 
 The text form is described in Ikala-Graphics' `MaterialText`.
+
+## Baking Textures
+
+`bin/bakeTextures` bakes texture graphs (`*.texgraph.yml`, made in the workbench's Graph panel) to the PNG maps the game reads, without opening the editor. Give it graphs or folders; each graph bakes to the content folder it names, or to the one `--data` gives. Maps whose pixels wouldn't change are left alone:
+
+```
+bin/bakeTextures ../Lotomation/art/textures/block
+bin/bakeTextures --data /tmp/data stone.texgraph.yml
+```
