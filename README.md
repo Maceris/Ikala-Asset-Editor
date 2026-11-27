@@ -32,6 +32,14 @@ The editor is never written to while it runs. Its settings, logs and reports go 
 
 `-Dikala.home=<dir>` and `-Dikala.cache=<dir>` move them.
 
+## Check Scripts
+
+`plugins/Asset-Converter/scripts/checks/` holds scripts that drive the editor as a person would and log each step as `Script: ...`. Run one at startup with `-Dikala.test.script=<file>`, its arguments in `-Dikala.test.scriptArgs=<text>`, and `-Dikala.test.exitAfterScript=true` to end the run with the script: the editor shuts down when it finishes, exiting with 1 if a UI check in it failed, else 0. Without that flag the editor stays open afterwards.
+
+```
+java -Dikala.test.exitAfterScript=true -Dikala.test.script=plugins/Asset-Converter/scripts/checks/workbench_subgraph.iks -Dikala.test.scriptArgs=<scratch folder> -jar Ikala-Core-0.6.0.jar
+```
+
 ## Converting Assets
 
 `bin/convertAsset` converts assets between the binary `.ika` form games load and text, without opening the editor. Materials only for now: `stone.ika` becomes `stone.material.yml` beside it, and back. Give several files to convert each, or `-o <file>` to name the output of one:

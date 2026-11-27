@@ -1,0 +1,56 @@
+// A check of subgraphs in the workbench's graph panel. Run it at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a scratch folder>
+// It saves the stone starter in the folder and bakes it, makes a subgraph of its speckle nodes and
+// bakes again, which must leave every map unchanged. Then it opens the subgraph, changes a level,
+// saves and goes back, where the subgraph node measures differently. Last it takes the subgraph's
+// output out and goes back, where the node shows the lost pin as an error and keeps its links.
+// Each step is logged as "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(".");
+await(t.frames(30));
+await(t.click("*//reset-layout"));
+await(t.frames(10));
+converter.graph("starter stone");
+converter.graph("setting data .");
+converter.graph("setting texture block/sub_check");
+converter.graphSave(args, "sub_check.texgraph.yml");
+// Opened through the workbench, which shows the graph panel
+converter.graphOpen(args, "sub_check.texgraph.yml");
+await(t.frames(10));
+converter.graph("bake");
+// The bake shows its texture in the Viewer, in front of the graph
+await(t.clickItem("*", "Graph"));
+
+// The speckle nodes as a subgraph: the maps come out as they were
+converter.graph("subgraph make speckle.texgraph.yml white1 gradient_map1 white2 threshold1 blend1");
+await(t.frames(10));
+converter.graph("log");
+converter.graph("describe speckle1");
+converter.graph("bake");
+// The bake shows its texture in the Viewer, in front of the graph
+await(t.clickItem("*", "Graph"));
+converter.graphSave(args, "sub_check.texgraph.yml");
+await(t.frames(30));
+converter.graph("measure speckle1");
+
+// An edit inside reaches the graph placing it
+converter.graph("subgraph open speckle1");
+await(t.frames(10));
+converter.graph("log");
+converter.graph("set threshold1 level 0.6");
+converter.graphSave(args, "speckle.texgraph.yml");
+converter.graph("subgraph back");
+await(t.frames(30));
+converter.graph("measure speckle1");
+
+// An output taken out shows as an error, and its links stay
+converter.graph("subgraph open speckle1");
+await(t.frames(10));
+converter.graph("select output_color");
+converter.graph("delete");
+converter.graphSave(args, "speckle.texgraph.yml");
+converter.graph("subgraph back");
+await(t.frames(30));
+converter.graph("describe speckle1");
+converter.graph("log");
+converter.log("Subgraphs checked");
