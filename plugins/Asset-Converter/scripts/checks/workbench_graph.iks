@@ -7,11 +7,16 @@
 // removing unused nodes and finding, saves that and opens it again. Then it drives the canvas with
 // real mouse and key input at the points the editor names: the node and frame menus, the comment,
 // frame and find popups, an error's tooltip, placing a node with a held key, a reroute by
-// double-click, dragging a frame and the minimap. Last it bakes the graph into the folder. Each
+// double-click, dragging a frame and the minimap. It bakes the graph into the folder, then checks
+// the editing features: swatches, showing a node, Measure, pin ranges, the seed grid, parameters
+// and a switch, and the Output on the 3D shape; it saves and reopens that graph. Each
 // step is logged as "Script: ...".
 Object t = ui.test();
 converter.openWorkbench(".");
 await(t.frames(30));
+await(t.click("*//reset-layout"));
+await(t.frames(10));
+converter.graph("swatches off");
 converter.graph("new");
 converter.graph("add noise/cells 0 0");
 converter.graph("add input/constant 0 120");
@@ -94,21 +99,29 @@ converter.graph("describe frame1");
 await(t.mouseDragAt("*//graph-canvas", "frame frame1", "at 296 -40"));
 await(t.frames(5));
 converter.graph("describe frame1");
-await(t.mouseMoveTo("*//graph-canvas", "at 300 560"));
+converter.graph("view 100 300 1");
+await(t.frames(3));
+await(t.mouseMoveTo("*//graph-canvas", "at 100 300"));
 await(t.keyDown("a"));
-await(t.mouseClickAt("*//graph-canvas", "at 300 560"));
+await(t.mouseClickAt("*//graph-canvas", "at 100 300"));
 await(t.keyUp("a"));
 await(t.frames(5));
 converter.graph("describe add1");
 converter.graph("add input/image 300 700");
 await(t.frames(5));
+converter.graph("focus image1");
+await(t.frames(5));
 await(t.mouseMoveTo("*//graph-canvas", "node image1"));
 await(t.waitForTooltip("Choose an image file"));
 converter.log("Graph tooltip shown");
+converter.graph("focus blend1");
+await(t.frames(3));
 await(t.mouseDoubleClickAt("*//graph-canvas", "link color1.color blend1.base"));
 await(t.frames(5));
 converter.graph("log");
-await(t.mouseMoveTo("*//graph-canvas", "at 300 400"));
+converter.graph("focus all1");
+await(t.frames(3));
+await(t.mouseMoveTo("*//graph-canvas", "node all1"));
 await(t.key("ctrl+f"));
 await(t.typeItem("*", "##find", "Output", true));
 await(t.frames(5));
@@ -122,4 +135,54 @@ converter.graphSave(args, "tidy.texgraph.yml");
 await(t.frames(5));
 converter.graph("bake");
 await(t.frames(30));
+// Editing: swatches, showing a node from its menu, Measure, a pin's range, the seed grid, parameters,
+// a switch, and the Output's maps in the Viewer and on the 3D view's shape
+converter.graphOpen(args, "tidy.texgraph.yml");
+await(t.frames(10));
+converter.graph("swatches on");
+await(t.frames(5));
+converter.graph("previews");
+converter.graph("focus blend1");
+await(t.frames(3));
+await(t.mouseClickAt("*//graph-canvas", "node blend1", "right"));
+await(t.clickItem("*", "Show in the Viewer"));
+await(t.frames(10));
+converter.graph("previews");
+converter.graph("focus cells1");
+await(t.frames(3));
+await(t.mouseClickAt("*//graph-canvas", "node cells1", "right"));
+await(t.clickItem("*", "Measure"));
+await(t.frames(5));
+converter.graph("measure cells1");
+await(t.mouseMoveTo("*//graph-canvas", "out cells1 value"));
+await(t.waitForTooltip("value (scalar)"));
+converter.graph("pin cells1 value out");
+converter.graph("seeds on");
+await(t.frames(10));
+converter.graph("seeds pick 4");
+converter.graph("seeds off");
+converter.graph("param add wear scalar");
+converter.graph("param set wear 0.75");
+converter.graph("param add useTint switch");
+converter.graph("add parameter/scalar 0 760");
+converter.graph("set scalar1 name wear");
+converter.graph("add switch/color 480 760");
+converter.graph("set color3 name useTint");
+converter.graph("link color1.color color3.on");
+converter.graph("link color2.color color3.off");
+await(t.frames(10));
+converter.graph("describe scalar1");
+converter.graph("describe color3");
+converter.graph("pin color3 result out");
+converter.graph("display all1");
+converter.graph("map normal");
+converter.graph("shape on");
+await(t.frames(60));
+converter.graph("previews");
+converter.graphSave(args, "params.texgraph.yml");
+await(t.frames(5));
+converter.graphOpen(args, "params.texgraph.yml");
+await(t.frames(30));
+converter.graph("param set wear 0.5");
+converter.graph("log");
 converter.log("Graph checked");
