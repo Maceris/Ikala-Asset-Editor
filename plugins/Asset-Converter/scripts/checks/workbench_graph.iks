@@ -2,7 +2,10 @@
 //   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a folder for the saved graph>
 // It builds a small graph through the editor's own edits, links a scalar into a color (which adds
 // a Gray conversion node), undoes and redoes, duplicates and deletes, saves the graph and opens it
-// again. Each step is logged as "Script: ...".
+// again. Then it tidies the graph: a reroute, a named reroute pair, a comment frame, a collapsed
+// node, hidden pins, a comment, aligning and straightening, upstream and downstream selection,
+// removing unused nodes and finding, saves that and opens it again. Each step is logged as
+// "Script: ...".
 Object t = ui.test();
 converter.openWorkbench(".");
 await(t.frames(30));
@@ -40,5 +43,33 @@ converter.graphOpen(args, "demo.graph.yml");
 await(t.frames(30));
 converter.graph("log");
 converter.graph("select multiply1");
+await(t.frames(30));
+converter.graph("reroute lerp1.color output1.color 680 260");
+converter.graph("add graph/send 480 40");
+converter.graph("add graph/receive 320 360");
+converter.graph("link multiply1.result send1.in");
+converter.graph("set send1 name mask");
+converter.graph("set receive1 name mask");
+converter.graph("link receive1.out lerp1.t");
+converter.graph("add math/constant 900 600");
+converter.graph("log");
+await(t.frames(5));
+converter.graph("select color1 color2");
+converter.graph("frame Colors");
+converter.graph("collapse color2");
+converter.graph("hide lerp1");
+converter.graph("comment output1 The final color");
+converter.graph("straighten output1");
+converter.graph("upstream lerp1");
+converter.graph("downstream checker1");
+converter.graph("find final");
+converter.graph("unused");
+converter.graph("log");
+converter.graphSave(args, "tidy.graph.yml");
+await(t.frames(10));
+converter.graphOpen(args, "tidy.graph.yml");
+await(t.frames(30));
+converter.graph("log");
+converter.graph("select");
 await(t.frames(30));
 converter.log("Graph checked");
