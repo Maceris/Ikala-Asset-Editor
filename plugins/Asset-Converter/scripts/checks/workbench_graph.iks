@@ -4,8 +4,10 @@
 // a Gray conversion node), undoes and redoes, duplicates and deletes, saves the graph and opens it
 // again. Then it tidies the graph: a reroute, a named reroute pair, a comment frame, a collapsed
 // node, hidden pins, a comment, aligning and straightening, upstream and downstream selection,
-// removing unused nodes and finding, saves that and opens it again. Each step is logged as
-// "Script: ...".
+// removing unused nodes and finding, saves that and opens it again. Last it drives the canvas with
+// real mouse and key input at the points the editor names: the node and frame menus, the comment,
+// frame and find popups, an error's tooltip, placing a node with a held key, a reroute by
+// double-click, dragging a frame and the minimap. Each step is logged as "Script: ...".
 Object t = ui.test();
 converter.openWorkbench(".");
 await(t.frames(30));
@@ -72,4 +74,41 @@ await(t.frames(30));
 converter.graph("log");
 converter.graph("select");
 await(t.frames(30));
+await(t.mouseClickAt("*//graph-canvas", "node color1", "right"));
+await(t.clickItem("*", "Collapse"));
+await(t.frames(5));
+converter.graph("describe color1");
+await(t.mouseClickAt("*//graph-canvas", "node lerp1", "right"));
+await(t.clickItem("*", "Comment..."));
+await(t.typeItem("*", "##comment", "Mixes the colors", true));
+await(t.frames(5));
+converter.graph("describe lerp1");
+await(t.mouseClickAt("*//graph-canvas", "frame frame1", "right"));
+await(t.clickItem("*", "Edit..."));
+await(t.typeItem("*", "##frame", "Base colors", true));
+await(t.frames(5));
+converter.graph("describe frame1");
+await(t.mouseDragAt("*//graph-canvas", "frame frame1", "at 296 -40"));
+await(t.frames(5));
+converter.graph("describe frame1");
+await(t.mouseMoveTo("*//graph-canvas", "at 300 560"));
+await(t.keyDown("a"));
+await(t.mouseClickAt("*//graph-canvas", "at 300 560"));
+await(t.keyUp("a"));
+await(t.frames(5));
+converter.graph("describe add1");
+await(t.mouseMoveTo("*//graph-canvas", "node add1"));
+await(t.waitForTooltip("Input a isn't linked"));
+converter.log("Graph tooltip shown");
+await(t.mouseDoubleClickAt("*//graph-canvas", "link color1.color lerp1.a"));
+await(t.frames(5));
+converter.graph("log");
+await(t.mouseMoveTo("*//graph-canvas", "at 300 400"));
+await(t.key("ctrl+f"));
+await(t.typeItem("*", "##find", "Output", true));
+await(t.frames(5));
+converter.graph("describe output1");
+await(t.mouseClickAt("*//graph-canvas", "minimap 0.1 0.1"));
+await(t.frames(5));
+converter.graph("log");
 converter.log("Graph checked");
