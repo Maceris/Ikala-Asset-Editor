@@ -9,7 +9,8 @@
 // frame and find popups, an error's tooltip, placing a node with a held key, a reroute by
 // double-click, dragging a frame and the minimap. It bakes the graph into the folder, then checks
 // the editing features: swatches, showing a node, Measure, pin ranges, the seed grid, parameters
-// and a switch, and the Output on the 3D shape; it saves and reopens that graph. Each
+// and a switch, and the Output on the 3D shape; it saves and reopens that graph. Last a starter
+// graph, a quantized node with its palette and an Expression. Each
 // step is logged as "Script: ...".
 Object t = ui.test();
 converter.openWorkbench(".");
@@ -51,6 +52,9 @@ converter.graphSave(args, "demo.texgraph.yml");
 await(t.frames(10));
 converter.graphOpen(args, "demo.texgraph.yml");
 await(t.frames(30));
+// A view saved by an earlier run would put the nodes elsewhere
+converter.graph("view 360 240 1");
+await(t.frames(3));
 converter.graph("log");
 converter.graph("select multiply1");
 await(t.frames(30));
@@ -79,6 +83,9 @@ converter.graphSave(args, "tidy.texgraph.yml");
 await(t.frames(10));
 converter.graphOpen(args, "tidy.texgraph.yml");
 await(t.frames(30));
+// A view saved by an earlier run would put the nodes elsewhere
+converter.graph("view 360 240 1");
+await(t.frames(3));
 converter.graph("log");
 converter.graph("select");
 await(t.frames(30));
@@ -139,6 +146,9 @@ await(t.frames(30));
 // a switch, and the Output's maps in the Viewer and on the 3D view's shape
 converter.graphOpen(args, "tidy.texgraph.yml");
 await(t.frames(10));
+// A view saved by an earlier run would put the nodes elsewhere
+converter.graph("view 360 240 1");
+await(t.frames(3));
 converter.graph("swatches on");
 await(t.frames(5));
 converter.graph("previews");
@@ -183,6 +193,29 @@ converter.graphSave(args, "params.texgraph.yml");
 await(t.frames(5));
 converter.graphOpen(args, "params.texgraph.yml");
 await(t.frames(30));
+// A view saved by an earlier run would put the nodes elsewhere
+converter.graph("view 360 240 1");
+await(t.frames(3));
 converter.graph("param set wear 0.5");
 converter.graph("log");
+// The library: a starter graph made from nodes alone, a quantized node shown with its palette,
+// and an Expression, first right and then with a mistake
+converter.graph("starter stone");
+await(t.frames(10));
+converter.graph("log");
+converter.graph("add color/quantize 1200 600");
+converter.graph("set quantize1 palette #565659,#808084");
+converter.graph("set quantize1 dither ordered");
+converter.graph("link blend1.color quantize1.color");
+converter.graph("display quantize1");
+await(t.frames(10));
+converter.graph("previews");
+converter.graph("pin quantize1 index out");
+converter.graph("add math/expression 0 600");
+converter.graph("set expression1 formula a*2+sin(x*pi)");
+await(t.frames(5));
+converter.graph("describe expression1");
+converter.graph("set expression1 formula a+q");
+await(t.frames(5));
+converter.graph("describe expression1");
 converter.log("Graph checked");
