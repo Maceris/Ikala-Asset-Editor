@@ -1,0 +1,32 @@
+// A check of the workbench's viewers: a texture, a swatch and a container, each shown in the
+// viewer panel. Run it at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a folder for the PNG files>
+// It opens the editor icon, measures it and captures it once and tiled 3x3, shows a swatch and
+// captures it, then opens two sample containers. Each step is logged as "Script: ...".
+Object t = ui.test();
+converter.openWorkbench("plugins/Ikala-Graphics/data/textures/editor_icon.png");
+await(t.frames(30));
+converter.logViewer();
+converter.measureViewer();
+converter.captureViewer(args, "texture.png");
+await(t.frames(10));
+converter.tileViewer(true);
+await(t.frames(10));
+converter.captureViewer(args, "tiled.png");
+await(t.frames(10));
+
+converter.showSwatch(16);
+await(t.frames(10));
+converter.logViewer();
+converter.measureViewer();
+converter.captureViewer(args, "swatch.png");
+await(t.frames(10));
+
+converter.openSample("valid.ika");
+await(t.frames(30));
+converter.logViewer();
+converter.openSample("bad-checksum.ika");
+await(t.frames(30));
+converter.logViewer();
+await(t.frames(30));
+converter.log("Viewers checked");
