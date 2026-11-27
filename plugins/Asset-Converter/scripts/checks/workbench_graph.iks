@@ -1,0 +1,44 @@
+// A check of the workbench's graph panel, on the demo math and color nodes. Run it at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a folder for the saved graph>
+// It builds a small graph through the editor's own edits, links a scalar into a color (which adds
+// a Gray conversion node), undoes and redoes, duplicates and deletes, saves the graph and opens it
+// again. Each step is logged as "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(".");
+await(t.frames(30));
+converter.graph("new");
+converter.graph("add math/checker 0 0");
+converter.graph("add math/constant 0 120");
+converter.graph("add math/multiply 240 40");
+converter.graph("add math/color 240 200");
+converter.graph("add math/color 240 320");
+converter.graph("add math/lerp 480 200");
+converter.graph("add out/output 720 200");
+converter.graph("set color1 g 0.4");
+converter.graph("set color2 r 0.2");
+converter.graph("link checker1.mask multiply1.a");
+converter.graph("link constant1.value multiply1.b");
+converter.graph("link color1.color lerp1.a");
+converter.graph("link color2.color lerp1.b");
+converter.graph("link multiply1.result lerp1.t");
+converter.graph("link lerp1.color output1.color");
+converter.graph("log");
+converter.graph("link multiply1.result output1.color");
+converter.graph("log");
+converter.graph("undo");
+converter.graph("log");
+converter.graph("redo");
+converter.graph("undo");
+converter.graph("select constant1 multiply1");
+converter.graph("duplicate");
+converter.graph("log");
+converter.graph("delete");
+converter.graph("log");
+converter.graphSave(args, "demo.graph.yml");
+await(t.frames(10));
+converter.graphOpen(args, "demo.graph.yml");
+await(t.frames(30));
+converter.graph("log");
+converter.graph("select multiply1");
+await(t.frames(30));
+converter.log("Graph checked");
