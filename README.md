@@ -53,7 +53,7 @@ The text form is described in Ikala-Graphics' `MaterialText`.
 
 ## Building Textures
 
-`bin/buildTextures` builds a game's textures from their sources: every texture graph under the sources folder bakes its PNG maps, then every texture's PNG maps there, baked or painted, become one `.ika` under the shipped folder. Files whose pixels wouldn't change are left alone. `--uses` bakes only the graphs that read a shared parameter file:
+`bin/buildTextures` builds a game's textures from their sources: every texture graph and instance under the sources folder bakes its PNG maps, then every texture's PNG maps there, baked or painted, become one `.ika` under the shipped folder. Files whose pixels wouldn't change are left alone. `--uses` bakes only the graphs that read a shared parameter file:
 
 ```
 bin/buildTextures ../Lotomation/art/textures ../Lotomation/plugins/Lotomation/data/textures

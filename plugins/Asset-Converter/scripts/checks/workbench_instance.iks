@@ -1,0 +1,49 @@
+// A check of texture instances in the workbench's graph panel. Run it at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a scratch folder>
+// and -Dikala.test.exitAfterScript=true to end the run with it.
+// It saves the stone starter in the folder with a tint parameter for its base color, makes a red
+// and a blue instance of it, sets each one's tint and saves it, and bakes the blue one. Back in the
+// graph, its instance swatches differ by color; an edit to the graph changes both. Each instance
+// file must list only its parent, texture and tint. Each step is logged as "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(".");
+await(t.frames(30));
+await(t.click("*//reset-layout"));
+await(t.frames(10));
+converter.graph("starter stone");
+converter.graph("setting data .");
+converter.graph("setting texture block/inst_check");
+converter.graph("param add tint color");
+converter.graph("param set tint #61615e");
+converter.graph("add parameter/color 240 600");
+converter.graph("set color2 name tint");
+converter.graph("link color2.color blend1.base");
+converter.graphSave(args, "inst_check.texgraph.yml");
+converter.graphOpen(args, "inst_check.texgraph.yml");
+await(t.frames(10));
+
+// Two instances, each with its own tint
+converter.graph("instance new red.texinst.yml block/inst_red");
+converter.graph("instance new blue.texinst.yml block/inst_blue");
+converter.graphOpen(args, "red.texinst.yml");
+await(t.frames(10));
+converter.graph("param set tint #a03020");
+converter.graphSave(args, "red.texinst.yml");
+converter.graphOpen(args, "blue.texinst.yml");
+await(t.frames(10));
+converter.graph("param set tint #3050a0");
+converter.graphSave(args, "blue.texinst.yml");
+converter.graph("bake");
+// The bake shows its texture in the Viewer, in front of the graph
+await(t.clickItem("*", "Graph"));
+converter.graph("instance show red.texinst.yml");
+converter.graph("instance show blue.texinst.yml");
+
+// Back in the graph, each instance's swatch, then an edit to the graph reaching both
+converter.graph("instance parent");
+await(t.frames(30));
+converter.graph("instances");
+converter.graph("set threshold1 level 0.6");
+await(t.frames(30));
+converter.graph("instances");
+converter.log("Instances checked");
