@@ -21,7 +21,7 @@ await(t.clickItem("*", "Scene"));
 await(t.clickItem("*", "Lighting"));
 
 // A click in the middle of the view picks the mesh there
-await(t.mouseClick(920, 553));
+await(t.mouseClick(923, 605));
 await(t.frames(5));
 boolean picked = await(t.itemExists("*", "Frame selected"));
 if (picked) {
@@ -57,3 +57,5 @@ converter.log("Hid and showed the original");
 await(t.clickItem("*", "Colors"));
 await(t.clickItem("*", "Clusters"));
 converter.log("Colored by cluster");
+await(t.frames(120));
+converter.log("LOD checked");

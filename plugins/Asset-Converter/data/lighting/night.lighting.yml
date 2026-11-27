@@ -1,0 +1,12 @@
+# A full moon and the stars, so emissive parts are judged against a dark scene.
+name: Night
+order: 5
+sun:
+  around: 150
+  up: 35
+  color: [1.0, 0.94, 0.86]
+  lux: 0.25
+sky: physical
+glow: 0.002
+stars: true
+exposure: -2.5

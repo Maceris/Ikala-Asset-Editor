@@ -1,0 +1,10 @@
+# A low warm sun: long shadows, and how a surface takes light from the side.
+name: Sunset
+order: 2
+sun:
+  around: -60
+  up: 4
+  color: [1.0, 0.55, 0.3]
+  lux: 8000
+sky: physical
+exposure: 10.5

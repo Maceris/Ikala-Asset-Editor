@@ -1,0 +1,16 @@
+# The block on grass, beside stone and dirt, to judge it against the blocks around it in the game.
+name: Neighbors
+order: 3
+blocks:
+  - fill: [[-2, -1, -2], [2, -1, 2]]
+    block: lotomation:grass
+  - at: [0, 0, 0]
+    block: subject
+  - at: [1, 0, 0]
+    block: lotomation:stone
+  - at: [-1, 0, 0]
+    block: lotomation:dirt
+  - at: [0, 0, -1]
+    block: lotomation:stone
+  - at: [0, 1, -1]
+    block: lotomation:stone

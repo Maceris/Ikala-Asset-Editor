@@ -1,0 +1,8 @@
+# No sun, only a bright cloud cover: shapes without shadows, colors without highlights.
+name: Overcast
+order: 1
+sky: ambient
+ambient:
+  color: [0.98, 1.0, 1.04]
+  luminance: 3000
+exposure: 12.5

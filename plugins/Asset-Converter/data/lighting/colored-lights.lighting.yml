@@ -1,0 +1,19 @@
+# Red, green and blue lights around the subject, a third of the way round from each other: shows
+# where normals and colors go wrong.
+name: Colored lights
+order: 4
+sky: none
+lights:
+  - at: [1.6, 1.2, 0.0]
+    color: [1.0, 0.1, 0.1]
+    candela: 120
+    range: 6
+  - at: [-0.8, 1.2, 1.386]
+    color: [0.1, 1.0, 0.1]
+    candela: 120
+    range: 6
+  - at: [-0.8, 1.2, -1.386]
+    color: [0.15, 0.25, 1.0]
+    candela: 120
+    range: 6
+exposure: 5

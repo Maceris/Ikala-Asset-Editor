@@ -1,0 +1,10 @@
+# A high sun in a clear sky: the everyday look.
+name: Noon
+order: 0
+sun:
+  around: 40
+  up: 70
+  color: [1.0, 0.97, 0.92]
+  lux: 100000
+sky: physical
+exposure: 15

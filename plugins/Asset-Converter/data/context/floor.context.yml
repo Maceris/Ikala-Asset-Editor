@@ -1,0 +1,6 @@
+# A 5x5 floor of the block, to see how it tiles underfoot and from a low angle.
+name: Floor
+order: 2
+blocks:
+  - fill: [[-2, 0, -2], [2, 0, 2]]
+    block: subject

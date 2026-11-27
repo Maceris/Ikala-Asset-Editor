@@ -1,0 +1,10 @@
+# No sky, one warm light like a torch: how an asset reads underground.
+name: Torch cave
+order: 3
+sky: none
+lights:
+  - at: [0.8, 1.2, 0.6]
+    color: [1.0, 0.62, 0.3]
+    candela: 80
+    range: 8
+exposure: 4

@@ -1,0 +1,6 @@
+# A 5x5 wall of the block, to see how it tiles side by side and up.
+name: Wall
+order: 1
+blocks:
+  - fill: [[-2, 0, 0], [2, 4, 0]]
+    block: subject
