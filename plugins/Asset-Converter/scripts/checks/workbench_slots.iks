@@ -1,0 +1,62 @@
+// A check of asset slots in the 3D view's material editor. Run it from the editor repo at startup
+// with
+//   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a scratch folder>
+//   -Dikala.test.exitAfterScript=true -Dikala.home=<another scratch folder>
+// where the scratch folder holds check.material.yml with
+//   roughness: 0.5
+//   textures:
+//     baseColor: missing.png
+// The scratch Home keeps its roots out of yours. It adds Lotomation's data and art folders as asset
+// roots, opens the material, whose base color shows missing, saves it to find the missing name
+// kept, then fills the slots: stone's texture dropped on the base color, the normal map picked by
+// searching, and the Assets panel's selection used for the packed map, and saves again. It clears
+// the base color, then puts stone's texture back with a click on its use-selected arrow. It saves
+// the window as missing.png and slots.png in the scratch folder. Each step is logged as
+// "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(".");
+await(t.frames(30));
+await(t.click("*//reset-layout"));
+await(t.frames(10));
+converter.index("add ../Lotomation/plugins/Lotomation/data");
+converter.index("add ../Lotomation/art");
+converter.index("scan");
+await(t.frames(5));
+
+converter.openWorkbench(args, "check.material.yml");
+await(t.frames(60));
+// Fold the sections above the material, so its slots are on screen: items scrolled out of the
+// properties panel aren't there to click
+await(t.clickItem("*", "Scene"));
+await(t.clickItem("*", "Lighting"));
+await(t.clickItem("*", "Selected"));
+await(t.frames(5));
+converter.slot("log");
+await(t.saveWindow(args, "missing.png"));
+converter.materialSave(args, "kept.material.yml");
+
+converter.slotDrop("Base color", "../Lotomation/plugins/Lotomation/data", "textures/block/stone.ika");
+converter.slot("pick", "Normal", "stone.ika");
+converter.browser("type texture");
+converter.browser("search dirt");
+await(t.frames(10));
+converter.browser("select dirt.ika");
+converter.slot("use", "Occlusion, roughness, metal");
+await(t.frames(60));
+converter.slot("log");
+converter.materialSave(args, "filled.material.yml");
+
+converter.slot("clear", "Base color");
+await(t.frames(5));
+converter.slot("log");
+
+// A click on the base color's use-selected arrow, with stone's texture selected
+converter.browser("search stone");
+await(t.frames(10));
+converter.browser("select stone.ika");
+await(t.frames(5));
+await(t.clickItem("*", "<##Base color"));
+await(t.frames(60));
+converter.slot("log");
+await(t.saveWindow(args, "slots.png"));
+converter.log("Slots checked");
