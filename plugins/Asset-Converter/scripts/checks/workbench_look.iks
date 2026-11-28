@@ -1,0 +1,50 @@
+// A check of the look editor. Run it from the editor repo at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a content folder>
+//   -Dikala.test.exitAfterScript=true -Dikala.home=<a scratch folder>
+// where the content folder is a plugin's data folder, like <scratch>/plugins/Check/data, holding
+//   looks/block/stone.kvt with
+//     {model:"lotomation:block/cube_all", texture:"lotomation:block/stone", material:"check:block/stone"}
+//   render_materials/block/stone.ika and shiny.ika, copies of Lotomation's stone.ika and steel.ika
+// so saving writes only the check's files. The scratch Home keeps its roots out of yours. It adds
+// Lotomation's data and art folders and the check's folder as roots, opens the look in its context
+// scene, picks dirt's texture by searching, drops the shiny material on it, sets the material's
+// roughness, saves and reads the files back, then changes the texture again and reverts. It saves
+// the window as look.png in the check's folder. Each step is logged as "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(".");
+await(t.frames(30));
+await(t.click("*//reset-layout"));
+await(t.frames(10));
+converter.index("add ../Lotomation/plugins/Lotomation/data");
+converter.index("add ../Lotomation/art");
+converter.index("add", args);
+converter.index("scan");
+await(t.frames(5));
+
+converter.openWorkbench(args, "looks/block/stone.kvt");
+await(t.frames(90));
+converter.look("log opened");
+converter.look("files");
+
+converter.slot("pick", "Look texture", "dirt");
+await(t.frames(60));
+converter.slotDrop("Look material", args, "render_materials/block/shiny.ika");
+await(t.frames(60));
+converter.look("choose material");
+converter.look("roughness 0.25");
+await(t.frames(10));
+converter.look("log edited");
+await(t.saveWindow(args, "look.png"));
+
+converter.look("save");
+await(t.frames(5));
+converter.look("log saved");
+converter.look("files");
+
+converter.slot("pick", "Look texture", "sand");
+await(t.frames(60));
+converter.look("log changed again");
+converter.look("revert");
+await(t.frames(60));
+converter.look("log reverted");
+converter.log("Look checked");
