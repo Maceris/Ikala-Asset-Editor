@@ -34,7 +34,7 @@ The editor is never written to while it runs. Its settings, logs and reports go 
 
 ## Check Scripts
 
-`plugins/Asset-Converter/scripts/checks/` holds scripts that drive the editor as a person would and log each step as `Script: ...`. Run one at startup with `-Dikala.test.script=<file>`, its arguments in `-Dikala.test.scriptArgs=<text>`, and `-Dikala.test.exitAfterScript=true` to end the run with the script: the editor shuts down when it finishes, exiting with 1 if a UI check in it failed, else 0. Without that flag the editor stays open afterwards.
+`plugins/Asset-Converter/scripts/checks/` holds scripts that drive the editor as a person would and log each step as `Script: ...`. Run one at startup with `-Dikala.test.script=<file>`, its arguments in `-Dikala.test.scriptArgs=<text>`, and `-Dikala.test.exitAfterScript=true` to end the run with the script: the editor shuts down when it finishes, exiting with 1 if a UI check in it failed or it couldn't start, else 0. Without that flag the editor stays open afterwards. A check that changes saved state, like `workbench_index.iks` adding asset roots, says to run it with `-Dikala.home=<scratch folder>` so yours stay as they are.
 
 ```
 java -Dikala.test.exitAfterScript=true -Dikala.test.script=plugins/Asset-Converter/scripts/checks/workbench_subgraph.iks -Dikala.test.scriptArgs=<scratch folder> -jar Ikala-Core-0.6.0.jar

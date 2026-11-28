@@ -1,0 +1,38 @@
+// A check of the asset index in the workbench. Run it from the editor repo at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a content folder>
+//   -Dikala.test.exitAfterScript=true -Dikala.home=<a scratch folder>
+// where the content folder is a plugin's data folder, like <scratch>/plugins/Check/data, holding
+// looks/block/broken.kvt with {model:"lotomation:block/cube_all", texture:"check:block/nothing"}.
+// The scratch Home keeps its roots out of yours. It adds Lotomation's data and art folders and the
+// check's folder as roots, reads them, lists what uses the bronze render material and what a look
+// and a graph use, jumps to a root in the file list, opens the broken look and finds its missing
+// texture in the Problems panel, then takes the check's root out, which takes the problem with it.
+// Each step is logged as "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(".");
+await(t.frames(30));
+await(t.click("*//reset-layout"));
+await(t.frames(10));
+converter.index("add ../Lotomation/plugins/Lotomation/data");
+converter.index("add ../Lotomation/art");
+converter.index("add", args);
+converter.index("scan");
+converter.index("roots");
+converter.index("problems");
+converter.index("usedby ../Lotomation/plugins/Lotomation/data/render_materials/block/bronze.ika");
+converter.index("uses ../Lotomation/plugins/Lotomation/data/looks/block/bronze.kvt");
+converter.index("uses ../Lotomation/art/textures/block/stone.texgraph.yml");
+converter.index("go 1");
+
+// The broken look, and its problem in the panel
+converter.graphOpen(args, "looks/block/broken.kvt");
+await(t.frames(10));
+converter.index("uses", args, "looks/block/broken.kvt");
+await(t.clickItem("*", "Problems"));
+await(t.waitForItem("*", "broken.kvt: texture check:block/nothing"));
+converter.log("Index problem shown");
+
+converter.index("remove", args);
+converter.index("scan");
+converter.index("problems");
+converter.log("Index checked");
