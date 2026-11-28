@@ -1,0 +1,41 @@
+// A check of the workbench's References panel. Run it from the editor repo at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a content folder>
+//   -Dikala.test.exitAfterScript=true -Dikala.home=<a scratch folder>
+// where the content folder is a plugin's data folder, like <scratch>/plugins/Check/data, holding
+// looks/block/broken.kvt with {model:"lotomation:block/cube_all", texture:"check:block/nothing"}
+// and overrides/lotomation/textures/block/stone.ika, a copy of Lotomation's.
+// The scratch Home keeps its roots out of yours. It adds Lotomation's data and art folders and the
+// check's folder as roots, shows what uses the cube model and checks that against a search of the
+// looks' text, clicks the stone look to put it in the middle, goes back, then shows the broken
+// look with its missing texture and the overriding stone texture. Each step is logged as
+// "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(".");
+await(t.frames(30));
+await(t.click("*//reset-layout"));
+await(t.frames(10));
+converter.index("add ../Lotomation/plugins/Lotomation/data");
+converter.index("add ../Lotomation/art");
+converter.index("add", args);
+converter.index("scan");
+await(t.frames(5));
+
+converter.references("show ../Lotomation/plugins/Lotomation/data/models/block/cube_all.ika");
+await(t.frames(10));
+converter.references("log model");
+converter.references("grep");
+
+converter.references("select stone.kvt");
+await(t.frames(10));
+converter.references("log clicked look");
+converter.references("back");
+await(t.frames(10));
+converter.references("log back");
+
+converter.references("show", args, "looks/block/broken.kvt");
+await(t.frames(10));
+converter.references("log broken look");
+converter.references("show", args, "overrides/lotomation/textures/block/stone.ika");
+await(t.frames(10));
+converter.references("log override");
+converter.log("References checked");

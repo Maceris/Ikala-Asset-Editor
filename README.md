@@ -40,6 +40,8 @@ The editor is never written to while it runs. Its settings, logs and reports go 
 java -Dikala.test.exitAfterScript=true -Dikala.test.script=plugins/Asset-Converter/scripts/checks/workbench_subgraph.iks -Dikala.test.scriptArgs=<scratch folder> -jar Ikala-Core-0.6.0.jar
 ```
 
+To see what a step looks like, a script can save the editor's window, panels and all, with `await(ui.test().saveWindow("<file>.png"))`. `saveFrame` saves only the game's scene, which the editor never draws.
+
 ## Converting Assets
 
 `bin/convertAsset` converts assets between the binary `.ika` form games load and text, without opening the editor. Materials only for now: `stone.ika` becomes `stone.material.yml` beside it, and back. Give several files to convert each, or `-o <file>` to name the output of one:
