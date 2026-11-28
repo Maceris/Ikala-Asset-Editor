@@ -1,0 +1,32 @@
+// A check of editing nested world generation values in the Details panel. Run it from the editor
+// repo at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a content folder>
+//   -Dikala.test.exitAfterScript=true -Dikala.home=<a scratch folder>
+// where the content folder is a plugin's data folder, like <scratch>/plugins/Check/data, holding
+// worldgen/density/height.kvt, a copy of Lotomation's. The scratch Home keeps its roots out of
+// yours. It shows the file's density tree, changes a spline point, turns the range mask into a
+// constant, adds a spline point, saves, and logs the file, whose other text stays as it was. It
+// saves the window as worldgen.png in the content folder. Each step is logged as "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(".");
+await(t.frames(30));
+await(t.click("*//reset-layout"));
+await(t.frames(10));
+converter.index("add", args);
+converter.index("scan");
+await(t.frames(5));
+converter.details("show");
+
+converter.browser("search height");
+await(t.frames(10));
+converter.browser("select height.kvt");
+await(t.frames(5));
+converter.details("path density.args[0].points[2].y -5");
+converter.details("path density.args[1].args[2].type constant");
+converter.details("path density.args[1].args[2].value 2");
+converter.details("append density.args[0].points x=2, y=100");
+await(t.frames(10));
+await(t.saveWindow(args, "worldgen.png"));
+converter.details("save");
+converter.logFile(args, "worldgen/density/height.kvt");
+converter.log("Worldgen checked");
