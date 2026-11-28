@@ -1,0 +1,69 @@
+// A check of texture instances and shared parameter files in the Details panel. Run it from the
+// editor repo at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a scratch folder>
+//   -Dikala.test.exitAfterScript=true -Dikala.home=<another scratch folder>
+// where the scratch folder holds shared.texparams.yml with
+//   texture parameters: 1
+//   parameters:
+//     grain: {type: scalar, value: 0.2, max: 1}
+// The scratch Home keeps its roots out of yours. It saves the stone starter there with a tint and a
+// wear parameter, makes two instances of it, adds the folder as an asset root, and in Details sets
+// both instances' tint and wear at once, then resets one's tint so its parent's shows through, and
+// sets the shared file's grain. It logs each file after saving, and saves the window as
+// instances.png and graph_values.png in the scratch folder. Each step is logged as "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(".");
+await(t.frames(30));
+await(t.click("*//reset-layout"));
+await(t.frames(10));
+converter.graph("starter stone");
+converter.graph("setting data .");
+converter.graph("setting texture block/values_check");
+converter.graph("param add tint color");
+converter.graph("param set tint #61615e");
+converter.graph("param add wear scalar");
+converter.graph("param set wear 0.4");
+converter.graphSave(args, "values_check.texgraph.yml");
+converter.graphOpen(args, "values_check.texgraph.yml");
+await(t.frames(10));
+converter.graph("instance new a.texinst.yml block/values_a");
+converter.graph("instance new b.texinst.yml block/values_b");
+await(t.frames(5));
+
+converter.index("add", args);
+converter.index("scan");
+await(t.frames(5));
+converter.details("show");
+
+converter.browser("search texinst");
+await(t.frames(10));
+converter.browser("select a.texinst.yml");
+converter.browser("also b.texinst.yml");
+await(t.frames(5));
+converter.details("log instances");
+converter.details("set tint #a03020");
+converter.details("set wear 0.8");
+await(t.frames(5));
+await(t.saveWindow(args, "instances.png"));
+converter.details("save");
+converter.logFile(args, "a.texinst.yml");
+converter.logFile(args, "b.texinst.yml");
+
+converter.browser("select a.texinst.yml");
+await(t.frames(5));
+converter.details("reset tint");
+converter.details("log a reset");
+converter.details("save");
+converter.logFile(args, "a.texinst.yml");
+
+converter.browser("search texparams");
+await(t.frames(10));
+converter.browser("select shared.texparams.yml");
+await(t.frames(5));
+converter.details("log shared");
+converter.details("set grain 0.5");
+await(t.frames(5));
+await(t.saveWindow(args, "graph_values.png"));
+converter.details("save");
+converter.logFile(args, "shared.texparams.yml");
+converter.log("Graph values checked");
