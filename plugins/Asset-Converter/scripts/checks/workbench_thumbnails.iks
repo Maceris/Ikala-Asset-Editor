@@ -1,0 +1,42 @@
+// A check of rendered thumbnails in the workbench's Assets panel. Run it twice from the editor
+// repo, with the same scratch folders both times, at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.exitAfterScript=true
+//   -Dikala.home=<scratch>/home -Dikala.cache=<scratch>/cache
+// It adds Lotomation's data and art folders as asset roots and shows its render materials, models,
+// model sources and looks in turn, logging how many of each have a thumbnail in the cache before
+// and after giving the renders time. On the first run they are rendered; on the second every one
+// is cached before any time passes. Each step is logged as "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(".");
+await(t.frames(30));
+await(t.click("*//reset-layout"));
+await(t.frames(10));
+converter.index("add ../Lotomation/plugins/Lotomation/data");
+converter.index("add ../Lotomation/art");
+converter.index("scan");
+await(t.frames(5));
+
+converter.browser("type render material");
+await(t.frames(3));
+converter.browser("renders materials at first");
+await(t.frames(1200));
+converter.browser("renders materials after");
+
+converter.browser("type model");
+await(t.frames(3));
+converter.browser("renders models at first");
+await(t.frames(600));
+converter.browser("renders models after");
+
+converter.browser("type model source");
+await(t.frames(3));
+converter.browser("renders model sources at first");
+await(t.frames(600));
+converter.browser("renders model sources after");
+
+converter.browser("type look");
+await(t.frames(3));
+converter.browser("renders looks at first");
+await(t.frames(1200));
+converter.browser("renders looks after");
+converter.log("Thumbnails checked");
