@@ -1,0 +1,47 @@
+// A check of the workbench's Assets panel. Run it twice from the editor repo, with the same
+// scratch folders both times, at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.exitAfterScript=true
+//   -Dikala.home=<scratch>/home -Dikala.cache=<scratch>/cache
+// It adds Lotomation's data and art folders as asset roots, finds the grass texture by fuzzy
+// search among textures, makes the shown thumbnails and sees grass's uploaded, then saves the search
+// as the collection Grassy and picks grass into the set Favorites, and shows each. On the first run
+// grass's thumbnail isn't cached when first asked; on the second it is, and both collections are
+// there before they are saved again. Each step is logged as "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(".");
+await(t.frames(30));
+await(t.click("*//reset-layout"));
+await(t.frames(10));
+converter.index("add ../Lotomation/plugins/Lotomation/data");
+converter.index("add ../Lotomation/art");
+converter.index("scan");
+await(t.frames(5));
+
+// What an earlier run left
+converter.browser("collection Grassy");
+await(t.frames(3));
+converter.browser("list");
+converter.browser("collection Favorites");
+await(t.frames(3));
+converter.browser("list");
+converter.browser("collection none");
+
+converter.browser("type texture");
+converter.browser("search grs");
+await(t.frames(3));
+converter.browser("list");
+converter.browser("cached grass.ika");
+converter.browser("thumbnails");
+await(t.frames(30));
+converter.browser("uploaded grass.ika");
+
+converter.browser("select grass.ika");
+converter.browser("save Grassy");
+converter.browser("pick Favorites");
+converter.browser("collection Favorites");
+await(t.frames(3));
+converter.browser("list");
+converter.browser("mode list");
+await(t.frames(3));
+converter.browser("list");
+converter.log("Browser checked");
