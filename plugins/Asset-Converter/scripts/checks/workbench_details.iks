@@ -1,0 +1,57 @@
+// A check of the Details panel. Run it from the editor repo at startup with
+//   -Dikala.test.script=<this file> -Dikala.test.scriptArgs=<a scratch folder>
+//   -Dikala.test.exitAfterScript=true -Dikala.home=<another scratch folder>
+// where the scratch folder holds
+//   plugins/Check/data/blocks/rock.kvt     /* A rock */ {material:"stone", tags:[T;"solid"]}
+//   plugins/Check/data/looks/water/bay.kvt {chlorophyll:0.5F, cdom:0.1F, sediment:2.0F}
+//   art/render_materials/a.material.yml    roughness: 0.4 and metallic: 1, on two lines
+//   art/render_materials/b.material.yml    roughness: 0.7
+// The scratch Home keeps its roots out of yours. It adds the two folders as asset roots, edits the
+// block's collision and tags, both materials at once (their roughness set, metallic reset), and the
+// water look's fetch, saving each and logging the files, and saves the window as details.png in
+// the scratch folder. Each step is logged as "Script: ...".
+Object t = ui.test();
+converter.openWorkbench(".");
+await(t.frames(30));
+await(t.click("*//reset-layout"));
+await(t.frames(10));
+converter.index("add", args, "plugins/Check/data");
+converter.index("add", args, "art");
+converter.index("scan");
+await(t.frames(5));
+converter.details("show");
+
+converter.browser("search rock");
+await(t.frames(10));
+converter.browser("select rock.kvt");
+await(t.frames(5));
+converter.details("log block");
+converter.details("set collision none");
+converter.details("set tags solid, heavy");
+converter.details("log edited");
+converter.details("save");
+converter.logFile(args, "plugins/Check/data/blocks/rock.kvt");
+
+converter.browser("search material");
+await(t.frames(10));
+converter.browser("select a.material.yml");
+converter.browser("also b.material.yml");
+await(t.frames(5));
+converter.details("log materials");
+converter.details("set roughness 0.3");
+converter.details("reset metallic");
+converter.details("log both edited");
+await(t.saveWindow(args, "details.png"));
+converter.details("save");
+converter.logFile(args, "art/render_materials/a.material.yml");
+converter.logFile(args, "art/render_materials/b.material.yml");
+
+converter.browser("search bay");
+await(t.frames(10));
+converter.browser("select bay.kvt");
+await(t.frames(5));
+converter.details("log water");
+converter.details("set fetch 500");
+converter.details("save");
+converter.logFile(args, "plugins/Check/data/looks/water/bay.kvt");
+converter.log("Details checked");
